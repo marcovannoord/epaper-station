@@ -10,11 +10,13 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "server"
+                "FLASK_APP": "server",
+                "FLASK_DEBUG": "1"
             },
             "args": [
                 "run",
-                "--no-debugger"
+                "--no-debugger",
+                "--no-reload"
             ],
             "jinja": true
         }

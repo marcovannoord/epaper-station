@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ESP update server</title>
+    <title>e-paper station manager</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='bulma-switch.min.css') }}" />
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -28,8 +28,8 @@
                                 Home
                             </a>
                             {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('main.whitelist') }}" class="navbar-item">
-                                Whitelist
+                            <a href="{{ url_for('main.tags') }}" class="navbar-item">
+                                Tags
                             </a>
                             {% endif %}
                             {% if current_user.is_authenticated %}
@@ -85,8 +85,8 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-            <strong>ESP update server</strong> by M. van Noord, original by K. Stobbe. The source code is licensed
-            <a href="http://opensource.org/licenses/mit-license.php">MIT</a> and can be found on <a href="https://github.com/marcovannoord/esp-update-server">GitHub</a>.
+            <strong>E-paper shelf label manager</strong> by M. van Noord, using the Station-code from <a href="https://github.com/danielkucera/epaper-station">danielkucera</a>. The source code is licensed
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a> and can be found on <a href="https://github.com/marcovannoord/epaper-station">GitHub</a>.
           </p>
         </div>
       </footer>

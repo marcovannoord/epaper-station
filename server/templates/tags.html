@@ -1,13 +1,13 @@
-<!-- templates/status.html -->
+<!-- templates/tags.html -->
 
 {% extends "layout.html" %}
 
 {% block content %}
 <h1 class="title">
-  Whitelist
+  Tags
 </h1>
 <h2 class="subtitle">
-  Easy system to manage OTA updates for Espressif-based devices
+  Easy system to manage e-paper Electronic Shelf Labels
 </h2>
 <div class="box">
   <div class="card">
@@ -15,7 +15,7 @@
       <h2 class="title has-text-grey-darker">Add device</h2>
       <h3 class="subtitle has-text-grey-darker">Bind devices to a platform</h3>
     </div>
-    <form name="ADD" action="{{ url_for('main.whitelist') }}" method=post class=dropdown>
+    <form name="ADD" action="{{ url_for('main.tags') }}" method=post class=dropdown>
       <dl>
         <dt>MAC Address:
         <dd><input type=text size=30 name="macaddr" id="macaddr">
@@ -35,15 +35,15 @@
     </form>
   </div>
 </div>
-{% with platforms = platforms %}
-{% if platforms %}
-{% for platform in platforms %}
+{% with devices = devices %}
+{% if devices %}
+{% for device in devices %}
 <section class="box">
   <div class="box">
     <h2 class="title has-text-grey-darker">{{ platform.name.title() }}</h2>
     <b>Notes: </b>
     {{platform.notes}}
-    <form class="icon is-medium" name="notes" action="{{ url_for('main.whitelist') }}"
+    <form class="icon is-medium" name="notes" action="{{ url_for('main.tags') }}"
       id="platformnotesform{{platform.id}}" method="POST">
       <input type="hidden" name="_method" value="PLATFORMNOTES">
       <input type="hidden" name="_platform" value="{{platform.id}}">

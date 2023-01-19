@@ -73,6 +73,7 @@ class User(UserMixin, db.Model):
 
 class Device(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
+    name = db.Column(db.String)
     mac = db.Column(db.String(17), nullable=False)  # aa:bb:cc:dd:de:ff
     protover = db.Column(db.Integer)  # protocol version?
     hw_type = db.Column(db.Integer)
@@ -99,14 +100,14 @@ def update_CheckinInfo(src_addr: str, checkinInfo: CheckinInfo) -> Device:
         device = Device(mac=src_addr.lower())
         print("Device not yet known: {}".format(src_addr))
         db.session.add(device)
-    else:
-        device.last_seen = datetime.utcnow()
-        device.battery_voltage = checkinInfo.batteryMv
-        device.hw_type = checkinInfo.hwType
-        device.last_packet_LQI = checkinInfo.lastPacketLQI
-        device.last_packet_RSSI = checkinInfo.lastPacketRSSI
-        device.temperature = checkinInfo.temperature - 127
-        device.rfu = checkinInfo.rfu
+
+    device.last_seen = datetime.utcnow()
+    device.battery_voltage = checkinInfo.batteryMv
+    device.hw_type = checkinInfo.hwType
+    device.last_packet_LQI = checkinInfo.lastPacketLQI
+    device.last_packet_RSSI = checkinInfo.lastPacketRSSI
+    device.temperature = checkinInfo.temperature - 127
+    device.rfu = checkinInfo.rfu
     db.session.commit()
     return device
 
@@ -117,20 +118,20 @@ def update_TagInfo(src_addr: str, tagInfo: TagInfo) -> Device:
         device = Device(mac=src_addr.lower())
         print("Device not yet known: {}".format(src_addr))
         db.session.add(device)
-    else:
-        device.last_seen = datetime.utcnow()
-        device.battery_voltage = tagInfo.batteryMv
-        device.hw_type = tagInfo.hwType
-        device.compressions_supported = tagInfo.compressionsSupported
-        device.screen_mm_height = tagInfo.screenMmHeight
-        device.screen_mm_width = tagInfo.screenMmWidth
-        device.screen_px_height = tagInfo.screenPixHeight
-        device.screen_px_width = tagInfo.screenPixWidth
-        device.protover = tagInfo.protoVer
-        device.sw_ver = tagInfo.swVer
-        device.screen_type = tagInfo.screenType
-        device.max_wait_mSec = tagInfo.maxWaitMsec
-        device.rfu = tagInfo.rfu
+    
+    device.last_seen = datetime.utcnow()
+    device.battery_voltage = tagInfo.batteryMv
+    device.hw_type = tagInfo.hwType
+    device.compressions_supported = tagInfo.compressionsSupported
+    device.screen_mm_height = tagInfo.screenMmHeight
+    device.screen_mm_width = tagInfo.screenMmWidth
+    device.screen_px_height = tagInfo.screenPixHeight
+    device.screen_px_width = tagInfo.screenPixWidth
+    device.protover = tagInfo.protoVer
+    device.sw_ver = tagInfo.swVer
+    device.screen_type = tagInfo.screenType
+    device.max_wait_mSec = tagInfo.maxWaitMsec
+    device.rfu = tagInfo.rfu
     db.session.commit()
     return device
 

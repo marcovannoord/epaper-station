@@ -103,12 +103,12 @@ def utility_processor():
     return dict(format_mac=format_mac)
 
 
-@main.route("/whitelist")
+@main.route("/tags")
 @login_required
-def whitelist():
-    platforms = Platform.query.all()
-    unbound_devices = Device.query.filter_by(type=None).order_by(desc(Device.last_seen))
-    return render_template("whitelist.html", platforms=platforms, unbound_devices=unbound_devices)
+def tags():
+    devices = Device.query.all()
+    # unbound_devices = Device.query.filter_by(type=None).order_by(desc(Device.last_seen))
+    return render_template("tags.html", devices=devices)
 
 
 @main.route("/whitelist", methods=["POST"])
