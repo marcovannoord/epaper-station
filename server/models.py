@@ -5,9 +5,11 @@ from flask_login import UserMixin
 from . import db
 from sqlalchemy.sql import func
 
-from collections import namedtuple 
+from collections import namedtuple
 
-TagInfo = namedtuple('TagInfo', """
+TagInfo = namedtuple(
+    "TagInfo",
+    """
 protoVer,
 swVer,
 hwType,
@@ -21,7 +23,8 @@ compressionsSupported,
 maxWaitMsec,
 screenType,
 rfu
-""")
+""",
+)
 
 CheckinInfo = namedtuple(
     "CheckinInfo",
@@ -50,9 +53,7 @@ rfu
 
 
 class User(UserMixin, db.Model):
-    id = db.Column(
-        db.Integer, primary_key=True
-    )  # primary keys are required by SQLAlchemy
+    id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
@@ -71,9 +72,7 @@ class User(UserMixin, db.Model):
 
 
 class Device(db.Model):
-    id = db.Column(
-        db.Integer, primary_key=True
-    )  # primary keys are required by SQLAlchemy
+    id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
     mac = db.Column(db.String(17), nullable=False)  # aa:bb:cc:dd:de:ff
     protover = db.Column(db.Integer)  # protocol version?
     hw_type = db.Column(db.Integer)
@@ -94,21 +93,49 @@ class Device(db.Model):
     battery_voltage = db.Column(db.Integer)
 
 
-def update_and_get_TI(src_addr:str, tagInfo:TagInfo)->Device: 
-    device = Device.query.filter_by(mac=src_addr.lower()).first()
-    if device:
-        # device already exists, updating
-        print("Device already known: {}".format(src_addr))
-        device.last_seen = datetime.utcnow()
-    else:
-        device = Device(mac=src_addr.lower(),battery_voltage=tagInfo.batteryMv, hw_type=tagInfo.hwType, compressions_supported = tagInfo.compressionsSupported )
-        # add the new device to the database
+def update_CheckinInfo(src_addr: str, checkinInfo: CheckinInfo) -> Device:
+    device: Device = Device.query.filter_by(mac=src_addr.lower()).first()
+    if not device:
+        device = Device(mac=src_addr.lower())
+        print("Device not yet known: {}".format(src_addr))
         db.session.add(device)
-        print("Adding new device: {}".format(src_addr))
+    else:
+        device.last_seen = datetime.utcnow()
+        device.battery_voltage = checkinInfo.batteryMv
+        device.hw_type = checkinInfo.hwType
+        device.last_packet_LQI = checkinInfo.lastPacketLQI
+        device.last_packet_RSSI = checkinInfo.lastPacketRSSI
+        device.temperature = checkinInfo.temperature - 127
+        device.rfu = checkinInfo.rfu
     db.session.commit()
     return device
 
-def update_and_get(src_addr:str)->Device: 
+
+def update_TagInfo(src_addr: str, tagInfo: TagInfo) -> Device:
+    device: Device = Device.query.filter_by(mac=src_addr.lower()).first()
+    if not device:
+        device = Device(mac=src_addr.lower())
+        print("Device not yet known: {}".format(src_addr))
+        db.session.add(device)
+    else:
+        device.last_seen = datetime.utcnow()
+        device.battery_voltage = tagInfo.batteryMv
+        device.hw_type = tagInfo.hwType
+        device.compressions_supported = tagInfo.compressionsSupported
+        device.screen_mm_height = tagInfo.screenMmHeight
+        device.screen_mm_width = tagInfo.screenMmWidth
+        device.screen_px_height = tagInfo.screenPixHeight
+        device.screen_px_width = tagInfo.screenPixWidth
+        device.protover = tagInfo.protoVer
+        device.sw_ver = tagInfo.swVer
+        device.screen_type = tagInfo.screenType
+        device.max_wait_mSec = tagInfo.maxWaitMsec
+        device.rfu = tagInfo.rfu
+    db.session.commit()
+    return device
+
+
+def update_and_get(src_addr: str) -> Device:
     device = Device.query.filter_by(mac=src_addr.lower()).first()
     if device:
         # device already exists, updating

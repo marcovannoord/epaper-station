@@ -8,7 +8,7 @@ from PIL import Image
 import time
 import gzip
 
-from .models import update_and_get, update_and_get_TI
+from .models import update_CheckinInfo, update_TagInfo, update_and_get
 
 from .models import Device, PendingInfo, CheckinInfo, TagInfo
 
@@ -190,7 +190,7 @@ def send_data(dst, data):
 def process_assoc(pkt, data):
     ti = TagInfo._make(struct.unpack("<BQHHBHHHHHHB11s", data))
     print(ti)
-    update_and_get_TI(bytes(pkt["src_add"]).hex(), ti)
+    update_TagInfo(bytes(pkt["src_add"]).hex(), ti)
 
     ai = AssocInfo(
         checkinDelay=CHECKIN_DELAY,
@@ -349,6 +349,7 @@ def process_checkin(pkt, data):
     ci = CheckinInfo._make(struct.unpack("<QHHBBB6s", data))
 
     print(ci)
+    update_CheckinInfo(bytes(pkt["src_add"]).hex(),ci)
 
     imgVer = 0
     imgLen = 0
