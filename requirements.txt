@@ -1,3 +1,9 @@
 pyserial
 pycryptodomex
 pillow
+flask==2.2.2
+Flask-HTTPAuth==4.7.0
+flask-moment>=1.0.5
+sentry-sdk[flask]>=1.13.0 
+flask-login >= 0.6.2
+flask-sqlalchemy==2.5.1

@@ -1,11 +1,13 @@
 # init.py
 
 import os
+import threading
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_moment import Moment
 from werkzeug.security import generate_password_hash
+
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -69,12 +71,22 @@ def create_app():
 
     # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
-
     app.register_blueprint(auth_blueprint)
 
     # blueprint for non-auth parts of app
     from .main import main as main_blueprint
-
     app.register_blueprint(main_blueprint)
+
+    # blueprint for Station
+    from .station import station as station_blueprint
+    
+    from server.station import start_station
+
+    # thread.daemon = True                       # Daemonize thread
+    thread = threading.Thread(target=start_station, args=[app,])
+    thread.start()                             # Start the execution
+    # start_station()
+
+    # app.register_blueprint(station_blueprint)
 
     return app
